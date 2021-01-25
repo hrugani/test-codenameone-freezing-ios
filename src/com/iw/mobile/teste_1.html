@@ -1,0 +1,115 @@
+<html>
+<head>    
+</head>
+
+<body>
+    
+    <div ng-app="myApp" ng-controller="IwTemplateCtrl" >
+        
+    <div id="patientName">
+        <label for="name">Patient Name:</label>
+        <input size="6" type="text" ng-model="variables.iwvar_patient_name" maxlength="50" size="50" >  
+    </div>
+    <div id="weight">
+        <label for="name">Weight:</label>
+        <input size="6" type="text" ng-model="variables.iwvar_e_f_peso" maxlength="10" >
+    </div>
+    <div id="height">
+        <label for="name">height:</label>
+         <input size="6" type="text" ng-model="variables.iwvar_e_f_altura" maxlength="10" >
+    </div>
+    <div id="MCI">
+        <label for="name">MCI</label>
+        <input size="6" type="text" ng-model="variables.iwvar_e_f_imc" maxlength="10" >
+    </div>
+   
+    <div id="MCIClass">
+        <Label for="name">mci Classification</Label>
+        <select ng-model="variables.iwvar_e_f_clasimc" size="1" ><option value="0" selected  >.</option>
+            <option value="1" >low</option>
+            <option value="2" >suitable</option>
+            <option value="3" >overweight</option>
+            <option value="4" >obesity I</option>
+            <option value="5" >obesity II</option>
+            <option value="6" >obesity III</option>
+        </select>
+    </div>
+        
+    </div>    
+    
+<script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js'></script>
+<script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-sanitize.min.js'></script>
+
+<script>
+
+    (function() {
+
+        var app = angular.module('myApp', ['ngSanitize']);
+
+        app.controller('IwTemplateCtrl', function($scope, $http){      
+
+            $scope.variables = {                                
+                "iwvar_patient_name":"Mary ...",  
+                "iwvar_e_f_peso": "",
+                "iwvar_e_f_altura": "",
+                "iwvar_e_f_imc": "",
+                "iwvar_e_f_clasimc": 3,                                
+                "iwvar_e_f_sondas_colost":false
+            };
+
+            //initial state-Control to avoid duble launch.
+            $scope.flag = false;
+            
+            // this callback is better than other.
+            // It update only result sub set of variables.
+            $scope.callback = function(result) {
+                for (var prop in result) {
+                    if ($scope.variables.hasOwnProperty(prop)) {
+                        $scope.variables[prop] = result[prop];
+                    }
+                }
+                $scope.$apply();
+            };
+
+            $scope.resetFlag = function(result) {
+                $scope.flag = false;
+            };
+            
+            $scope.getAngularScope = function() {        
+                var appElement = document.querySelector('[ng-app=myApp]');
+            return angular.element(appElement).scope();
+            };
+                        
+        });
+
+    })();
+    
+    
+    var getIwVariableValues = function() {        
+        var appElement = document.querySelector('[ng-app=myApp]');
+        var scope = angular.element(appElement).scope();
+        return scope.variables;
+    };
+    
+    var getAngularScope = function() {        
+        var appElement = document.querySelector('[ng-app=myApp]');
+        return angular.element(appElement).scope();
+    };
+    
+    var setIwVariableValues = function (varMap) {
+        var scope = getAngularScope();
+        scope.$apply(function() {
+            scope.variables = varMap;
+        });
+        scope.$apply();
+    };
+        
+</script>
+
+<script>
+    var varValues = getIwVariableValues();
+    setIwVariableValues();
+</script>
+
+</body>
+</html>
